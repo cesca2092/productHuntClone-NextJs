@@ -3,12 +3,12 @@ import React from 'react';
 
 
 
-const Nosotros = () => {
+const NuevoProducto = () => {
   return ( 
     <Layout>
-      <h1>Nosotros</h1>
+      <h1>Nuevo Producto</h1>
     </Layout>
    );
 }
  
-export default Nosotros;
+export default NuevoProducto;
