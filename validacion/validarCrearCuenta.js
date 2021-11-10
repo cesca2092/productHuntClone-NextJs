@@ -9,7 +9,7 @@ export default function validarCrearCuenta(valores){
   //validar el mail
   if(!valores.email){
     errores.email = 'El Email es obligatorio';
-  } else if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(valores,email)){
+  } else if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(valores.email)){
     errores.email = 'Email no valido';
   }
 
