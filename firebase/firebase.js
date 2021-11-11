@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  updateProfile,
+  signInWithEmailAndPassword
+} from 'firebase/auth'
 
 import firebaseConfig from './config';
 
@@ -18,6 +23,11 @@ class Firebase {
     return await updateProfile(nuevoUsuario.user,{
       displayName: nombre
     })
+  }
+
+  //Inicia Sesion del usuario
+  async login(email,password){
+    return signInWithEmailAndPassword(this.auth,email,password);
   }
 }
 
