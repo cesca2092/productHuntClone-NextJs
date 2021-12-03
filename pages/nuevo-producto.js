@@ -1,14 +1,17 @@
 import Layout from '../components/layout/Layout';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { css } from '@emotion/react';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { Formulario, Campo, InputSubmit, Error } from '../components/ui/Formulario';
 
-import firebase from '../firebase';
+import { FirebaseContext } from '../firebase';
 
 //validaciones
 import useValidacion from '../hooks/useValidacion';
-import validarCrearCuenta from '../validacion/validarCrearCuenta';
+import validarCrearProducto from '../validacion/validarCrearProducto';
+
+import { collection, addDoc } from "firebase/firestore";
+
 
 const STATE_INICIAL = {
   nombre: '',
@@ -20,7 +23,7 @@ const STATE_INICIAL = {
 
 
 const NuevoProducto = () => {
-
+  
   const [error, guardarError] = useState(false);
 
   const {
@@ -29,13 +32,39 @@ const NuevoProducto = () => {
     handleSubmit,
     handleChange,
     handleBlur
-  } = useValidacion(STATE_INICIAL, validarCrearCuenta, crearCuenta);
+  } = useValidacion(STATE_INICIAL, validarCrearProducto, crearProducto);
 
   const { nombre, empresa, imagen, url, descripcion }= valores;
 
-  async function crearCuenta(){
-   
+  //hook de routing para redireccionar
+  const router = useRouter();
+
+  //context con las operaciones crud de firebase
+  const { usuario, firebase } = useContext(FirebaseContext);
+
+  const {db} = firebase
+
+  async function crearProducto(){
+    //si el usuario no esta autenticado llevar al login
+    if(!usuario){
+      return router.push('/login');
+    }
+
+    //crear el objeto de nuevo producto
+    const producto = {
+      nombre,
+      empresa,
+      url,
+      descripcion,
+      votos: 0,
+      comentarios: [],
+      creado: Date.now()
+    }
+
+    //insertarlo en la base de datos
+    const productos = await addDoc(collection(db,"productos"),(producto))
   }
+
   return ( 
     <div>
       <Layout>
@@ -82,7 +111,7 @@ const NuevoProducto = () => {
               {errores.empresa && <Error>{errores.empresa}</Error>}
 
 
-              <Campo>
+              {/* <Campo>
                 <label htmlFor='imagen'>Imagen</label>
                 <input
                   type='file'
@@ -93,11 +122,12 @@ const NuevoProducto = () => {
                   onBlur={handleBlur}
                 />
               </Campo>
-              {errores.imagen && <Error>{errores.imagen}</Error>}
+              {errores.imagen && <Error>{errores.imagen}</Error>} */}
 
               <Campo>
                 <label htmlFor='url'>URL</label>
                 <input
+                placeholder='URL de tu producto'
                   type='url'
                   id='url'
                   name='url'
